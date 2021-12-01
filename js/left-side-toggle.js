@@ -21,6 +21,11 @@ function initLeftSideToggle() {
     },
 
     changePageLayoutWhenOpenToggle(isOpen) {
+      if(isOpen) {
+        KEEP.utils.pageTop_dom.classList.add('hide');
+      } else {
+        KEEP.utils.pageTop_dom.classList.remove('hide');
+      }
       this.toggleBarIcon && (this.toggleBarIcon.className = isOpen ? 'fas fa-outdent' : 'fas fa-indent');
       const pageAsideWidth = KEEP.theme_config.style.left_side_width || '260px';
       this.containerDom.style.paddingLeft = isOpen ? pageAsideWidth : '0';

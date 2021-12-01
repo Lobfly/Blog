@@ -32,11 +32,11 @@ function initTOC() {
               duration: 500,
               easing: 'linear',
               scrollTop: offset - 10,
-              complete: function () {
-                setTimeout(() => {
-                  KEEP.utils.pageTop_dom.classList.add('hide');
-                }, 100)
-              }
+              // complete: function () {
+              //   setTimeout(() => {
+              //     KEEP.utils.pageTop_dom.classList.add('hide');
+              //   }, 100)
+              // }
             });
           });
           return target;
