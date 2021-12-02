@@ -9,7 +9,7 @@
     
     <title>
         
-            前端大文件切片传输 |
+            折腾keep主题 |
         
         Lobfly&#39;s Blog
     </title>
@@ -124,7 +124,7 @@
     <div class="article-content-container">
 
         <div class="article-title">
-            <span class="title-hover-animation">前端大文件切片传输</span>
+            <span class="title-hover-animation">折腾keep主题</span>
         </div>
 
         
@@ -140,7 +140,7 @@
                     <div class="meta-info">
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
-        <i class="fas fa-edit"></i>&nbsp;2021-10-18 19:45:00
+        <i class="fas fa-edit"></i>&nbsp;2021-12-02 12:07:00
     </span>
     
     
@@ -149,7 +149,7 @@
             <ul>
                 
                     <li>
-                        <a href="/Blog/tags/js/">js</a>&nbsp;
+                        <a href="/Blog/tags/%E6%BA%90%E7%A0%81/">源码</a>&nbsp;
                     </li>
                 
             </ul>
@@ -168,32 +168,14 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="前端大文件切片传输"><a href="#前端大文件切片传输" class="headerlink" title="前端大文件切片传输"></a>前端大文件切片传输</h1><h2 id="File对象"><a href="#File对象" class="headerlink" title="File对象"></a>File对象</h2><blockquote>
-<p>通常情况下， File 对象是来自用户在一个 input元素上选择文件后返回的 FileList 对象,也可以是来自由拖放操作生成的 DataTransfer 对象，或者来自 HTMLCanvasElement 上的 mozGetAsFile() API。</p>
-</blockquote>
-<h3 id="Blob对象的子类"><a href="#Blob对象的子类" class="headerlink" title="Blob对象的子类"></a>Blob对象的子类</h3><p>文件FIle对象是Blob对象的子类，继承了Blob对象的属性与方法</p>
-<h3 id="获取File对象"><a href="#获取File对象" class="headerlink" title="获取File对象"></a>获取File对象</h3><p>通过inout.files来获取input元素的FileList对象，而input.value是文件的路径</p>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
-<li>File.lastModified 返回当前 File 对象所引用文件最后修改时间</li>
-<li>File.lastModifiedDate 返回当前 File 对象所引用文件最后修改时间的 Date 对象</li>
-<li>File.name 返回当前 File 对象所引用文件的名字</li>
-<li>File.size 返回文件的大小</li>
-<li>File.webkitRelativePath 返回文件的路径</li>
-<li>File.type 返回文件的类型</li>
+            <h1 id="折腾keep主题"><a href="#折腾keep主题" class="headerlink" title="折腾keep主题"></a>折腾keep主题</h1><ul>
+<li>bg.svg显示问题，明明是放在images目录下却一直请求不到。为此搞了个PicX图床，打算之后用koa做一个自己的图床服务器出来。</li>
+<li>点击Toc目录会把header栏给隐藏掉，然后无法从页面上跳转回主页，我感觉这样很反人类。一开始以为这是个bug，研究源码后发现这是个特性。。。可能作者认为toc和header一起显示会有点不协调  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// source/js/toc.js</span></span><br><span class="line"><span class="attr">complete</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">		KEEP.utils.pageTop_dom.classList.add(<span class="string">&#x27;hide&#x27;</span>);</span><br><span class="line">	&#125;, <span class="number">100</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  于是只能自己动手，实现了打开左侧toc栏隐藏header，关闭则显示header栏  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// source/js/left-side-toggle.js</span></span><br><span class="line"><span class="keyword">if</span>(isOpen) &#123;</span><br><span class="line">  KEEP.utils.pageTop_dom.classList.add(<span class="string">&#x27;hide&#x27;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  KEEP.utils.pageTop_dom.classList.remove(<span class="string">&#x27;hide&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li>点击header栏的 “Lobfly’s Blog”title后会跳转到<a href="http://lobfly.github.io/">lobfly.github.io</a>这个网址，而我的博客是部署在<a href="http://lobfly.github.io/Blog/">lobfly.github.io/Blog/</a> 上的，又得去研究ejs代码  发现header.ejs中两个href的属性是”/“，改成”Blog“就能实现正确跳转了  <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;% <span class="keyword">if</span> (theme.base_info.hasOwnProperty(<span class="string">&#x27;logo_img&#x27;</span>) &amp;&amp; theme.base_info.logo_img) &#123; %&gt;</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">&quot;logo-image&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">        &lt;%- image_tag(theme.base_info.logo_img) %&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line">&lt;% &#125; %&gt;</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">&quot;logo-title&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">    &lt;%= theme.base_info.title || config.title || &#x27;Keep Theme&#x27; %&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br></pre></td></tr></table></figure></li>
 </ul>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><blockquote>
-<p>File 接口没有定义任何方法，但是它从 Blob 接口继承slice方法</p>
-</blockquote>
-<p><a class="link"   target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Blob/slice" >Blob.slice - Web API 接口参考 | MDN<i class="fas fa-external-link-alt"></i></a></p>
-<h2 id="切片"><a href="#切片" class="headerlink" title="切片"></a>切片</h2><h3 id="大文件传输的问题"><a href="#大文件传输的问题" class="headerlink" title="大文件传输的问题"></a>大文件传输的问题</h3><p>在一个请求中上传大量数据会导致整个过程时间消耗较久，传输失败后要重头传输，而且用户无法知道传输的进度，体验较差</p>
-<p>所以在对大文件进行传输操作时，可以将大文件进行切片，可以实现如下几个要求</p>
-<ul>
-<li>可以断点续传</li>
-<li>可以显示上传的进度，用户体验更好</li>
-</ul>
-<h3 id="slice方法对文件切片"><a href="#slice方法对文件切片" class="headerlink" title="slice方法对文件切片"></a>slice方法对文件切片</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//chunks数组储存切片文件</span><br><span class="line">let chunks = []</span><br><span class="line">//slice方法接收两个参数，开始切片和结束切片的比特数,插值即为每个切片的大小，这里为1kb</span><br><span class="line">let startByte = 0</span><br><span class="line">let endByte = 1024</span><br><span class="line">while(startByte&lt;file.size)&#123;</span><br><span class="line">    let filePiece = file.slice(startByte,endByte)</span><br><span class="line">    chunks.push(filePiece)</span><br><span class="line">    startByte = endByte</span><br><span class="line">    endByte = startByte + piece</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">对chunks进行传输</span><br><span class="line">后续添加</span><br></pre></td></tr></table></figure>
         </div>
 
         
@@ -201,21 +183,21 @@
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                           rel="prev"
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
                            href="/Blog/2021/12/01/hello-world/"
                         >
-                            <span class="left arrow-icon flex-center">
-                              <i class="fas fa-chevron-left"></i>
-                            </span>
                             <span class="title flex-center">
                                 <span class="post-nav-title-item">Hello World</span>
-                                <span class="post-nav-item">上一篇</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
                             </span>
                         </a>
                     </div>
-                
                 
             </div>
         
@@ -319,7 +301,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E5%A4%A7%E6%96%87%E4%BB%B6%E5%88%87%E7%89%87%E4%BC%A0%E8%BE%93"><span class="nav-text">前端大文件切片传输</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#File%E5%AF%B9%E8%B1%A1"><span class="nav-text">File对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Blob%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AD%90%E7%B1%BB"><span class="nav-text">Blob对象的子类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96File%E5%AF%B9%E8%B1%A1"><span class="nav-text">获取File对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%87%E7%89%87"><span class="nav-text">切片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">大文件传输的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slice%E6%96%B9%E6%B3%95%E5%AF%B9%E6%96%87%E4%BB%B6%E5%88%87%E7%89%87"><span class="nav-text">slice方法对文件切片</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%98%E8%85%BEkeep%E4%B8%BB%E9%A2%98"><span class="nav-text">折腾keep主题</span></a></li></ol>
     </div>
 </div>
         </aside>
