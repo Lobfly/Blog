@@ -153,7 +153,7 @@
                     <div class="meta-info">
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
-        <i class="fas fa-edit"></i>&nbsp;2021-12-03 20:11:00
+        <i class="fas fa-edit"></i>&nbsp;2021-12-05 20:11:00
     </span>
     
     
@@ -194,7 +194,7 @@
 <ul>
 <li>__filename ： 返回当前模块的文件路径 （比__dirname多了个文件名）</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\28492\Desktop\Image-Hosting\backend           //__dirname</span><br><span class="line">C:\Users\28492\Desktop\Image-Hosting\backend\index.js  //__filename</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\<span class="number">28492</span>\Desktop\Image-Hosting\backend           <span class="comment">//__dirname</span></span><br><span class="line"><span class="attr">C</span>:\Users\<span class="number">28492</span>\Desktop\Image-Hosting\backend\index.js  <span class="comment">//__filename</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="路径解析"><a href="#路径解析" class="headerlink" title="路径解析"></a>路径解析</h3><ul>
 <li>“.”被解析成当前目录    解析时相当于一个空操作，空字符串就会被解析成”.”</li>
@@ -204,12 +204,12 @@
 <p>该方法会规范化给定的 path，并解析 ‘..’ 和 ‘.’ 片段</p>
 <p>当发现多个连续的路径分隔符时（如 POSIX 上的 / 与 Windows 上的 \ 或 /），它们会被单个的路径分隔符（POSIX 上是 /，Windows 上是 \）替换</p>
 <blockquote>
-<p>Windows系统下，’/‘和’&#39;均可以表示路径，但是在网络链接里只能用’/‘表示路径</p>
+<p>Windows系统下，’/‘和’&#39;均可以表示路径，但是在网络链接里只能用’/ ‘表示路径</p>
 </blockquote>
 <p><strong>path.join([…paths])：拼接路径</strong></p>
-<p>该方法会先把路径拼接在一起，然后进行规范化（即path.normalize），返回正确的路径</p>
+<p>该方法会先把路径拼接在一起，然后进行规范化（即<code>path.normalize</code>），返回正确的路径</p>
 <p>相当于</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path.normalize(paths.join(<span class="string">&#x27;/&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path.normalize(paths.join(<span class="string">&#x27;/&#x27;</span>))</span><br></pre></td></tr></table></figure>
 
 <p><strong>path.resolve([…paths])：智能解析绝对路径</strong></p>
 <p>该方法会把一个路径或路径片段的序列从左往右解析为一个<strong>绝对路径</strong></p>
@@ -218,7 +218,32 @@
 <li>以“/”开头的路径会将前面的路径丢弃掉，因为表示一个绝对路径（而join只是简单的拼接）</li>
 <li>…后续总结</li>
 </ul>
-<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h3 id="上传文件"><a href="#上传文件" class="headerlink" title="上传文件"></a>上传文件</h3><h3 id="获取文件"><a href="#获取文件" class="headerlink" title="获取文件"></a>获取文件</h3><h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><h3 id="上传文件"><a href="#上传文件" class="headerlink" title="上传文件"></a>上传文件</h3><p>这里用了fs模块的流传输，分别创建可读流和写入流通过pipe方法传输数据</p>
+<p><strong>pipe的用法</strong>：<code>readStream.pipe(writeStream)</code></p>
+<p>可以形象的记忆为水流从一个装满水的桶子流到一个空的桶子，可读流理解为装满水的桶，写入流理解为空桶</p>
+<h3 id="获取文件"><a href="#获取文件" class="headerlink" title="获取文件"></a>获取文件</h3><p>获取路径列表的逻辑很简单，就是把参数和路径字符串拼接到一起然后返回</p>
+<p>获取图片则需要设置一下响应头的<code>Content-Type</code>为<code>image/jpeg</code>，然后返回的数据才能正确显示为图片格式而不是单纯的数据文件</p>
+<h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><p>删除文件使用了fs模块的unlink方法</p>
+<blockquote>
+<p><code>fs.unlink()</code> 不适用于目录，无论是空目录还是其他目录。 要删除目录，请使用 <code>fs.rmdir()</code></p>
+</blockquote>
+<h3 id="关于文件操作踩的坑"><a href="#关于文件操作踩的坑" class="headerlink" title="关于文件操作踩的坑"></a>关于文件操作踩的坑</h3><p>fs模块中的文件读写等操作都是异步进行的，需要在外面包一层Promise</p>
+<p>一开始受koa内部的async await影响，以为直接在文件读写操作后加一个await，然后再在下面设置response就可以了，然而读写操作返回的并不是一个Promise对象</p>
+<p><strong>对于文件操作，nodejs提供了另外一套返回 promise 的异步文件操作方法</strong></p>
+<p>使用时需要从<code>&#39;fs/promises&#39;</code> 里面导入，如</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; readFile &#125; <span class="keyword">from</span> <span class="string">&#x27;fs/promises&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; readFile &#125; <span class="keyword">from</span> <span class="string">&#x27;fs&#x27;</span>; <span class="comment">//区分</span></span><br></pre></td></tr></table></figure>
+
+<p><a class="link"   target="_blank" rel="noopener" href="http://nodejs.cn/api/fs.html#fspromisesreadfilepath-options" >fs 文件系统 | Node.js API 文档<i class="fas fa-external-link-alt"></i></a></p>
+<p><strong>Promise操作里还踩的一个坑是resolve不会终止执行函数</strong></p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>)=&gt;</span>&#123;</span><br><span class="line">        fs.unlink(imgPath,<span class="function">(<span class="params">err</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(err) &#123;</span><br><span class="line">                ctx.body = <span class="string">&#x27;删除失败，不存在该文件&#x27;</span></span><br><span class="line">                resolve()</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;                <span class="comment">//不加else的话resolve之后还是会执行下面的语句</span></span><br><span class="line">                ctx.body = <span class="string">&#x27;删除成功&#x27;</span></span><br><span class="line">                resolve()</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>调用resolve或reject并不会终结 Promise 的参数函数的执行 ，最好在它们前面加上return语句</p>
+</blockquote>
+<h2 id="中间件的使用"><a href="#中间件的使用" class="headerlink" title="中间件的使用"></a>中间件的使用</h2><p>以后考虑写一个中间件使用总结</p>
+<h3 id="koa-body"><a href="#koa-body" class="headerlink" title="koa-body"></a>koa-body</h3><p>待补充</p>
+<h3 id="koa2-cors"><a href="#koa2-cors" class="headerlink" title="koa2-cors"></a>koa2-cors</h3><p>待补充</p>
+
         </div>
 
         
@@ -344,7 +369,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%80%BB%E7%BB%93"><span class="nav-text">搭建图床服务的总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF"><span class="nav-text">后端</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-text">文件路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%8E%B7%E5%8F%96"><span class="nav-text">路径获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%A7%A3%E6%9E%90"><span class="nav-text">路径解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6"><span class="nav-text">上传文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6"><span class="nav-text">获取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-text">删除文件</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E5%9B%BE%E5%BA%8A%E6%9C%8D%E5%8A%A1%E7%9A%84%E6%80%BB%E7%BB%93"><span class="nav-text">搭建图床服务的总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF"><span class="nav-text">后端</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84"><span class="nav-text">文件路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%8E%B7%E5%8F%96"><span class="nav-text">路径获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E8%A7%A3%E6%9E%90"><span class="nav-text">路径解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-text">文件操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6"><span class="nav-text">上传文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%96%87%E4%BB%B6"><span class="nav-text">获取文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-text">删除文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C%E8%B8%A9%E7%9A%84%E5%9D%91"><span class="nav-text">关于文件操作踩的坑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">中间件的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#koa-body"><span class="nav-text">koa-body</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#koa2-cors"><span class="nav-text">koa2-cors</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>
